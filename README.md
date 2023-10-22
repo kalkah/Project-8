@@ -317,6 +317,10 @@ Edit the mysqld.cnf file
 
 12. Open the website in your browser http://<Web-Server-Public-IP-Address-or-Public-DNS-Name>/index.php and make sure you can login into the website with myuser user.
 
+    on the webserver comment out the password encryption in the `/var/www/html/functions.php` file so that the new password created will not be harshed and the new user can login.
+    'sudo nano /var/www/html/functions.php' 
+![image](https://github.com/kalkah/Project-8/assets/95209274/77f241cf-fcca-4402-92aa-138613f8c086)
+
 webserver1
 ![image](https://github.com/kalkah/Project-8/assets/95209274/11e0e21c-1078-4b99-b7a0-d6701961d0dc)
 ![image](https://github.com/kalkah/Project-8/assets/95209274/dd527128-6021-4f5c-9021-40793bfbc759)
