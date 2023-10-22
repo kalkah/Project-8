@@ -48,11 +48,10 @@ In this project a solution that consists of following components will be impleme
 
 * Instead of formating the disks as `ext4` they will be formated them as `xfs`
 
-```
-sudo mkfs -t xfs /dev/webdata-vg/apps-lv
-sudo mkfs -t xfs /dev/webdata-vg/logs-lv
-sudo mkfs -t xfs /dev/webdata-vg/opt-lv
-```
+`sudo mkfs -t xfs /dev/webdata-vg/apps-lv`
+`sudo mkfs -t xfs /dev/webdata-vg/logs-lv`
+`sudo mkfs -t xfs /dev/webdata-vg/opt-lv`
+
 ![image](https://github.com/kalkah/Project-8/assets/95209274/4b67c32a-afa2-4d92-8548-1fd34e8a3b0e)
 
 3. Mount points was created on /mnt directory for the logical volumes as follow:
@@ -63,19 +62,17 @@ Mount logs-lv on /mnt/logs – To be used by webserver logs
 
 Mount opt-lv on /mnt/opt – To be used by Jenkins server in Project 8
 
-```
-sudo mkdir /mnt/apps
+`sudo mkdir /mnt/apps`
 
-sudo mkdir /mnt/logs
+`sudo mkdir /mnt/logs`
 
-sudo mkdir /mnt/opt
+`sudo mkdir /mnt/opt`
 
-sudo mount /dev/webdata-vg/apps-lv /mnt/apps
+`sudo mount /dev/webdata-vg/apps-lv /mnt/apps`
 
-sudo mount /dev/webdata-vg/logs-lv /mnt/logs
+`sudo mount /dev/webdata-vg/logs-lv /mnt/logs`
 
-sudo mount /dev/webdata-vg/opt-lv /mnt/opt
-```
+`sudo mount /dev/webdata-vg/opt-lv /mnt/opt`
 
 The /etc/fstab file was updated so that the mount configuration will persist after restart of the server. The UUID of the device will be used to update the /etc/fstab file.
 
@@ -93,17 +90,15 @@ The /etc/fstab file was updated so that the mount configuration will persist aft
 
 4. Install NFS server, configure it to start on reboot and make sure it is up and running
 
-```
-sudo yum -y update
+`sudo yum -y update`
 
-sudo yum install nfs-utils -y
+`sudo yum install nfs-utils -y`
 
-sudo systemctl start nfs-server.service
+`sudo systemctl start nfs-server.service`
 
-sudo systemctl enable nfs-server.service
+`sudo systemctl enable nfs-server.service`
 
-sudo systemctl status nfs-server.service
-```
+`sudo systemctl status nfs-server.service`
 
 ![image](https://github.com/kalkah/Project-8/assets/95209274/bdf71ba9-5b6e-4095-aeb0-02a4795d0698)
 
@@ -113,32 +108,29 @@ To check your subnet cidr – open your EC2 details in AWS web console and locat
 
   * Make sure we set up permission that will allow our Web servers to read, write and execute files on NFS:
 
-```
-sudo chown -R nobody: /mnt/apps
+`sudo chown -R nobody: /mnt/apps`
 
-sudo chown -R nobody: /mnt/logs
+`sudo chown -R nobody: /mnt/logs`
 
-sudo chown -R nobody: /mnt/opt
+`sudo chown -R nobody: /mnt/opt`
 
-sudo chmod -R 777 /mnt/apps
+`sudo chmod -R 777 /mnt/apps`
 
-sudo chmod -R 777 /mnt/logs
+`sudo chmod -R 777 /mnt/logs`
 
-sudo chmod -R 777 /mnt/opt
+`sudo chmod -R 777 /mnt/opt`
 
-sudo systemctl restart nfs-server.service
-```
+`sudo systemctl restart nfs-server.service`
 
 ![image](https://github.com/kalkah/Project-8/assets/95209274/c1abacae-a02b-4be0-af1f-80a0ae081bf9)
 
 * Configure access to NFS for clients within the same subnet (172.31.16.0/20):
 
 `sudo nano /etc/exports`
-```
-/mnt/apps <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)
-/mnt/logs <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)
-/mnt/opt <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)
-```
+
+`/mnt/apps <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)`
+`/mnt/logs <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)`
+`/mnt/opt <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)`
 
 ![image](https://github.com/kalkah/Project-8/assets/95209274/6b3820cd-f0ed-4731-80b3-5a7a48b36420)
 
@@ -166,10 +158,8 @@ sudo systemctl restart nfs-server.service
 
 2. Create a database and name it `tooling`
    
-```
-sudo mysql
-create database tooling;
-```
+`sudo mysql`
+`create database tooling;`
 
 3. Create a database user and name it `webaccess`
 
@@ -208,13 +198,14 @@ During the next steps we will do following:
 `sudo mount -t nfs -o rw,nosuid 172.31.28.109:/mnt/apps /var/www`
 
 4. Verify that NFS was mounted successfully by running `df -h`. Make sure that the changes will persist on Web Server after reboot:
-sudo nano /etc/fstab
+`sudo nano /etc/fstab`
 
 Add following line: `<NFS-Server-Private-IP-Address>:/mnt/apps /var/www nfs defaults 0 0`
 
 `172.31.28.109:/mnt/apps /var/www nfs defaults 0 0`
 
 `sudo systemctl daemon-reload` to update the system
+
 webserver1
 ![image](https://github.com/kalkah/Project-8/assets/95209274/b3be5953-f04d-4416-897f-e90a10ae3db6)
 
@@ -226,25 +217,23 @@ webserver3
 
 Install Remi’s repository, Apache and PHP
 
-```
-sudo yum install httpd -y
+`sudo yum install httpd -y`
 
-sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+`sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm`
 
-sudo dnf install dnf-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+`sudo dnf install dnf-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm`
 
-sudo dnf module reset php
+`sudo dnf module reset php`
 
-sudo dnf module enable php:remi-7.4
+`sudo dnf module enable php:remi-7.4`
 
-sudo dnf install php php-opcache php-gd php-curl php-mysqlnd
+`sudo dnf install php php-opcache php-gd php-curl php-mysqlnd`
 
-sudo systemctl start php-fpm
+`sudo systemctl start php-fpm`
 
-sudo systemctl enable php-fpm
+`sudo systemctl enable php-fpm`
 
-setsebool -P httpd_execmem 1
-```
+`setsebool -P httpd_execmem 1`
 
 webserver1 
 ![image](https://github.com/kalkah/Project-8/assets/95209274/99c9bcd4-e633-47f4-9f3e-3436e3605115)
@@ -280,11 +269,9 @@ Add following line: `<NFS-Server-Private-IP-Address>:/mnt/logs /var/logs/httpd n
 
 8.  Fork the tooling source code from Darey.io Github Account to your Github account
 
-```
-sudo yum install git -y
-git init
-sudo clone https://github.com/darey-io/tooling.git
-```
+`sudo yum install git -y`
+`git init`
+`sudo clone https://github.com/darey-io/tooling.git`
 
 ![image](https://github.com/kalkah/Project-8/assets/95209274/8d7dbf0d-3a76-4810-ae14-cf68c2c17d56)
 
@@ -311,23 +298,22 @@ If you can't connect to it and there is an error simply move to the DB server to
 ![image](https://github.com/kalkah/Project-8/assets/95209274/3bf25368-16ea-4ba8-8155-5f5c9f3157fc)
 
 
-Then edit the mysqld.cnf file (on the DB server)
+## The following configuration will be done on the DB server
 
-```
-sudo nano /etc/mysql/mysql.conf.d//mysqld.cnf
+Edit the mysqld.cnf file 
 
-sudo systemctl restart mysql
-
-sudo systemctl status mysql
-```
+`sudo nano /etc/mysql/mysql.conf.d//mysqld.cnf`
 ![image](https://github.com/kalkah/Project-8/assets/95209274/95172014-f93c-451b-8e31-7356790852a5)
+
+`sudo systemctl restart mysql`
+
+`sudo systemctl status mysql`
 
 ![image](https://github.com/kalkah/Project-8/assets/95209274/99754f94-4a5e-4fa6-8611-7ae310a93547)
 
 11. Create in MySQL a new admin user with username: myuser and password: password:
 
-**`INSERT INTO ‘users’ (‘id’, ‘username’, ‘password’, ’email’, ‘user_type’, ‘status’) VALUES
--> (1, ‘myuser’, ‘5f4dcc3b5aa765d61d8327deb882cf99’, ‘user@mail.com’, ‘admin’, ‘1’);`**
+**`INSERT INTO tooling.users (id, username, password, email, user_type, status) VALUES (2, ‘myuser’, ‘pass’, ‘user@mail.com’, ‘admin’, ‘1’);`**
 
 12. Open the website in your browser http://<Web-Server-Public-IP-Address-or-Public-DNS-Name>/index.php and make sure you can login into the website with myuser user.
 
